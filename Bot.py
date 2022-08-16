@@ -1,5 +1,4 @@
 #importing libraries (ensure you have these installed using pip, dontenv pip library name is python-dotenv)
-from getpass import getuser
 import json
 import discord
 import os
@@ -16,6 +15,7 @@ MODEL_TYPE = os.getenv("MODEL_TYPE")
 MODEL_NAME = os.getenv("MODEL_NAME")
 MAX_TOKENS = int(os.getenv("MAX_TOKENS"))
 #load in HappyGeneration model
+print(MODEL_NAME + " model " + MODEL_TYPE + " model")
 happy_gen = HappyGeneration(model_name=MODEL_NAME,model_type=MODEL_TYPE)
 beam_settings = GENSettings(num_beams=5,  max_length=10)
 
@@ -23,9 +23,8 @@ client = discord.Client()
 
 prompt_arr = []
     
-def getResponce(prompt, userID):
+def getResponce(prompt):
     output_beam_search = happy_gen.generate_text(prompt)
-    prompt_arr.append(output_beam_search.text)
     return output_beam_search.text
 
 @client.event
@@ -46,8 +45,8 @@ async def on_message(message):
 
     
 
-    messageOutput = getResponce(DEFAULT_PERSONALITY_TYPE + input,message.author.id)
-    print(DEFAULT_PERSONALITY_TYPE + input)
+    messageOutput = getResponce(message.content)
+    print(messageOutput)
     await message.channel.send(messageOutput)
 
 client.run(DISCORD_TOKEN)
